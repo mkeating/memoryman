@@ -164,39 +164,39 @@ window.onload = function() {
 			if( myGuy.ySpeed >= 0 && myGuy.ySpeed <= terminalVelocity) {
 				myGuy.ySpeed = myGuy.ySpeed + gravityConstant;
 			}
+
+
 			myGuy.y = myGuy.y + myGuy.ySpeed;
-		} else {
+		} /*else {
 			myGuy.ySpeed = 0;
-		}
+		}*/
 	}
 
 
 
 	function update() {
 
-		//console.log('myguy airborne: ' + myGuy.airborne);
-		//jumping and falling
-		
 
+		//jumping and falling
 		if (myGuy.jumping) {
 			myGuy.y -= myGuy.jumpHeight;
+			myGuy.falling = false;
 		} else {
-			//console.log('setting airborne to true');
+			myGuy.falling = true;
 			myGuy.airborne = true;
 		}
 
 		// vertical collision detection
-		
+			if(myGuy.airborne == true && myGuy.falling == true){
 
-			if(myGuy.airborne == true){
-
-				console.log('checking for floor');
+				console.log('yspeed: '  + myGuy.ySpeed);
 
 				for (var i = 0; i < level1.blocks.length; i++){
 
 					if(checkCollisionBottom(myGuy, level1.blocks[i])){
 						myGuy.y = level1.blocks[i].y - myGuy.height;
 						console.log('collision is setting airborne to false');
+						myGuy.ySpeed = 0;
 						myGuy.airborne = false;
 						break;
 					} else {
@@ -206,19 +206,7 @@ window.onload = function() {
 					}
 
 				}
-				/*
-				level1.blocks.some(function(block){
-					if(checkCollisionBottom(myGuy, block)){
-						myGuy.y = block.y - myGuy.height;
-						//console.log('hit bottom');
-						console.log('collision is setting airborne to false');
-						myGuy.airborne = false;
-						return true;
-					} else {
-						myGuy.airborne = true;
-						return false;
-					}
-				});*/
+
 			}
 			
 		level1.blocks.forEach(function(block){

@@ -16,19 +16,20 @@
 
 
 		//movement
-		this.friction = .9;
+		this.friction = .7;
 		this.xSpeed = 3;
 		this.xVelocity = 0;
 		this.xVelocityFactor = 5;
 		this.ySpeed = 0;
 		this.stroke = '#000000';
-		this.jumpHeight = 10;
+		this.jumpHeight = 7;
 
 		//state
 		this.facing = 'right';
 		console.log('setting initial airborne');
 		this.airborne = true;
 		this.jumping = false;
+		this.falling = false;
 
 
 		this.currentMemory;
@@ -81,7 +82,8 @@
 		}
 
 		this.land = function() {
-			this.jumpHeight = 13;		
+			//reset jumpHeight to initial
+			this.jumpHeight = 7;		
 			this.jumping = false;
 		}
 
