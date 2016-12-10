@@ -21,6 +21,7 @@
 		6) Bugs
 			a) slow down after like 2 mins
 			b) holding space fucks with falling
+			c) jumping up to a ledge causes a weird flight
 
 		7) Implement keyframe animation
 
@@ -99,8 +100,8 @@ window.onload = function() {
 	var keyState = {};
 
 	document.addEventListener('keydown', function(event){
-		myGuy.debug();
-		keyState[event.keyCode || event.which] = true;
+			keyState[event.keyCode || event.which] = true;
+		
 	}, true);
 
 	document.addEventListener('keyup', function(event){
@@ -133,11 +134,14 @@ window.onload = function() {
 
 		//space
 		if(keyState[32]){
+			//console.log(myGuy.airborne);
+
 			if(!myGuy.airborne){
+				console.log('jumping');
 				myGuy.jump();
-				//prevent holding space
-				keyState[32] = false;
 			}
+			//prevent holding space
+			keyState[32] = false;
 		}
 
 		setTimeout(controlLoop, 10);
@@ -153,8 +157,8 @@ window.onload = function() {
 
 	function gravity(){
 
-		var gravityConstant = .8; //acceleration while falling
-		var terminalVelocity = 4; //max falling speed
+		var gravityConstant = .2; //acceleration while falling
+		var terminalVelocity = 2; //max falling speed
 
 		if ( myGuy.airborne == true){
 			if( myGuy.ySpeed >= 0 && myGuy.ySpeed <= terminalVelocity) {
@@ -163,7 +167,6 @@ window.onload = function() {
 			myGuy.y = myGuy.y + myGuy.ySpeed;
 		} else {
 			myGuy.ySpeed = 0;
-
 		}
 	}
 
@@ -171,23 +174,54 @@ window.onload = function() {
 
 	function update() {
 
+		//console.log('myguy airborne: ' + myGuy.airborne);
 		//jumping and falling
-		gravity();
+		
 
 		if (myGuy.jumping) {
 			myGuy.y -= myGuy.jumpHeight;
 		} else {
+			//console.log('setting airborne to true');
 			myGuy.airborne = true;
 		}
 
 		// vertical collision detection
-		level1.blocks.forEach(function(block){
+		
 
-			if(checkCollisionBottom(myGuy, block)){
-				myGuy.y = block.y - myGuy.height;
-				myGuy.airborne = false;
+			if(myGuy.airborne == true){
+
+				console.log('checking for floor');
+
+				for (var i = 0; i < level1.blocks.length; i++){
+
+					if(checkCollisionBottom(myGuy, level1.blocks[i])){
+						myGuy.y = level1.blocks[i].y - myGuy.height;
+						console.log('collision is setting airborne to false');
+						myGuy.airborne = false;
+						break;
+					} else {
+						//console.log('collision is settting airborne to true');
+						//myGuy.airborne = true;
+						gravity();
+					}
+
+				}
+				/*
+				level1.blocks.some(function(block){
+					if(checkCollisionBottom(myGuy, block)){
+						myGuy.y = block.y - myGuy.height;
+						//console.log('hit bottom');
+						console.log('collision is setting airborne to false');
+						myGuy.airborne = false;
+						return true;
+					} else {
+						myGuy.airborne = true;
+						return false;
+					}
+				});*/
 			}
-
+			
+		level1.blocks.forEach(function(block){
 			if(checkCollisionTop(myGuy, block)){
 				myGuy.jumping = false;
 				myGuy.jumpHeight = 0;
@@ -215,28 +249,37 @@ window.onload = function() {
 		myGuy.x = myGuy.x + myGuy.xVelocity;
 		
 		controlLoop();
+
+		//console.log('update: airborne: ' + myGuy.airborne);
 	}
 
 	function draw(ctx) {
 
 		ctx.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
 		ctx.beginPath();
+
 		theFirstLevel.draw();
+
+
 		myGuy.draw(ctx);
 		ctx.closePath();
 		
 	}
 
+var lastTime;
+function main() {
 	
+	//not using the time/'per second' stuff yet
 
-	var fps = 60;
+	/*var now = Date.now();
+	var dt = (now - lastTime) / 1000.0;*/
 
-	setInterval(function() {
+	update();
+	draw(mainContext);
 
-		update();
-		draw(mainContext);
-		
+	//lastTime = now;
+	requestAnimationFrame (main);
+}
 
-	}, 1000/fps);
-
+main();
 }

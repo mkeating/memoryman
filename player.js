@@ -26,15 +26,17 @@
 
 		//state
 		this.facing = 'right';
+		console.log('setting initial airborne');
 		this.airborne = true;
 		this.jumping = false;
 
 
 		this.currentMemory;
 
-		function Memory(x, y) {
+		function Memory(x, y, airborne) {
 			this.x = x;
 			this.y = y;
+			this.airborne = airborne;
 			this.width = 15;
 			this.height = 15;
 
@@ -73,12 +75,13 @@
 			
 			if(!this.jumping && !this.airborne) {
 				this.jumping = true;
+				this.airborne = true;
 				setTimeout(this.land.bind(this), 200);
 			}
 		}
 
 		this.land = function() {
-			this.jumpHeight = 10;		
+			this.jumpHeight = 13;		
 			this.jumping = false;
 		}
 
@@ -86,7 +89,7 @@
 
 			
 			if(!this.currentMemory){
-				  this.currentMemory = new Memory(this.x, this.y);
+				  this.currentMemory = new Memory(this.x, this.y, this.airborne);
 			}	
 		}
 
@@ -94,13 +97,7 @@
 			if(this.currentMemory){
 				this.x = this.currentMemory.x;
 				this.y = this.currentMemory.y;
-
-				if(this.airborne == true){
-					this.airborne = false;
-					setTimeout(function(){
-						this.airborne = true;
-					}, 2000);
-				}
+				this.airborne = this.currentMemory.airborne;
 				
 				//here, we can add a few milliseconds of airborne = false;
 
@@ -110,7 +107,7 @@
 		}
 
 		this.debug = function() {
-			console.log(this.xVelocity);
+			//console.log(this);
 		}
 
 	}
