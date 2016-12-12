@@ -36,6 +36,8 @@ window.onload = function() {
 	
 	var level1 = 
 		{
+			'startPositionX': 100,
+			'startPositionY': 50,
 			'blocks': [
 				/*{
 					'x': 0,
@@ -73,6 +75,8 @@ window.onload = function() {
 	function Level(level, ctx) {
 
 		this.blocks = level.blocks;
+		this.startPositionX = level.startPositionX;
+		this.startPositionY = level.startPositionY;
 
 
 		this.draw= function(){	
@@ -88,8 +92,10 @@ window.onload = function() {
 
 	//main game stuff
 
-	var myGuy = new Player(100, 50);
+
 	var theFirstLevel = new Level(level1, mainContext);
+	var myGuy = new Player(theFirstLevel.startPositionX, theFirstLevel.startPositionY);
+	console.log(theFirstLevel.startPositionY);
 /*
 	
 	CONTROLS
@@ -106,6 +112,12 @@ window.onload = function() {
 
 	document.addEventListener('keyup', function(event){
 		keyState[event.keyCode || event.which] = false;
+
+		if(event.keyCode == 37 || event.keyCode == 39){
+
+			myGuy.running = false;
+			myGuy.runFrame = 1;
+		}
 	}, true);
 
 	function controlLoop() {
@@ -137,7 +149,6 @@ window.onload = function() {
 			//console.log(myGuy.airborne);
 
 			if(!myGuy.airborne){
-				console.log('jumping');
 				myGuy.jump();
 			}
 			//prevent holding space
@@ -189,15 +200,13 @@ window.onload = function() {
 		// vertical collision detection
 			if(myGuy.airborne == true && myGuy.falling == true){
 
-				console.log('yspeed: '  + myGuy.ySpeed);
-
 				for (var i = 0; i < level1.blocks.length; i++){
 
 					if(checkCollisionBottom(myGuy, level1.blocks[i])){
 						myGuy.y = level1.blocks[i].y - myGuy.height;
-						console.log('collision is setting airborne to false');
 						myGuy.ySpeed = 0;
 						myGuy.airborne = false;
+						myGuy.falling = false;
 						break;
 					} else {
 						//console.log('collision is settting airborne to true');

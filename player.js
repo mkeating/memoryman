@@ -8,15 +8,36 @@
 
 		//sprites
 
-		this.standingLeft =new Image();
+		/*this.standingLeft =new Image();
 		this.standingLeft.src = "img/stand-left.png";
 
 		this.standingRight =new Image();
-		this.standingRight.src = "img/stand-right.png";
+		this.standingRight.src = "img/stand-right.png";*/
+
+		this.sprites = {
+			'standingLeft': 'img/stand-left.png',
+			'standingRight': 'img/stand-right.png',
+			'jumpLeft': 'img/jump-left.png', 
+			'jumpRight': 'img/jump-right.png', 
+			'fallLeft': 'img/fall-left.png',
+			'fallRight': 'img/fall-right.png',
+			'runLeft1': 'img/run-left-1.png',
+			'runLeft2': 'img/run-left-2.png',
+			'runLeft3': 'img/run-left-3.png',
+			'runLeft4': 'img/run-left-4.png',
+
+			'runRight1': 'img/run-right-1.png',
+			'runRight2': 'img/run-right-2.png',
+			'runRight3': 'img/run-right-3.png',
+			'runRight4': 'img/run-right-4.png',
+
+		}
+
+		this.runFrame = 1;
 
 
 		//movement
-		this.friction = .7;
+		this.friction = .8;
 		this.xSpeed = 3;
 		this.xVelocity = 0;
 		this.xVelocityFactor = 5;
@@ -26,10 +47,10 @@
 
 		//state
 		this.facing = 'right';
-		console.log('setting initial airborne');
 		this.airborne = true;
 		this.jumping = false;
 		this.falling = false;
+		this.running = false;
 
 
 		this.currentMemory;
@@ -60,15 +81,29 @@
 
 		this.moveLeft = function(){
 			this.facing = 'left';
+			this.running = true;
 			if (this.xVelocity > -this.xSpeed) {
             	this.xVelocity += -this.xVelocityFactor;
+        	}
+
+        	if(this.runFrame < 4){
+        		this.runFrame++;
+        	} else {
+        		this.runFrame = 1;
         	}
 		}
 
 		this.moveRight = function(){
 			this.facing = 'right';
+			this.running = true;
 			if (this.xVelocity < this.xSpeed) {
             	this.xVelocity += this.xVelocityFactor;;
+        	}
+
+        	if(this.runFrame < 4){
+        		this.runFrame++;
+        	} else {
+        		this.runFrame = 1;
         	}
 		}
 
@@ -116,11 +151,38 @@
 
 	Player.prototype.draw = function(ctx) {
 
+		this.sprite = new Image();
+		var runString;
+
+
 		if(this.facing == 'right'){
-			ctx.drawImage(this.standingRight, this.x, this.y, this.width, this.height);
+
+			if(this.jumping == true ){
+				this.sprite.src = this.sprites.jumpRight;
+			} else if (this.falling == true){
+				this.sprite.src = this.sprites.fallRight;
+			} else if (this.running == true){
+				runString = 'runRight'+this.runFrame;
+				this.sprite.src = this.sprites[runString];
+			} else {
+				this.sprite.src = this.sprites.standingRight;
+			}
+
+			
 		} else {
-			ctx.drawImage(this.standingLeft, this.x, this.y, this.width, this.height);
+			if(this.jumping == true ){
+				this.sprite.src = this.sprites.jumpLeft;
+			} else if (this.falling == true){
+				this.sprite.src = this.sprites.fallLeft;
+			} else if (this.running == true){
+				runString = 'runLeft'+this.runFrame;
+				this.sprite.src = this.sprites[runString];
+			} else {
+				this.sprite.src = this.sprites.standingLeft;
+			}
 		}
+
+		ctx.drawImage(this.sprite, this.x, this.y, this.width, this.height);
 		
 		if(this.currentMemory){
 			this.currentMemory.draw(ctx);
