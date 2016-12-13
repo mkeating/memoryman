@@ -38,13 +38,14 @@ window.onload = function() {
 		{
 			'startPositionX': 100,
 			'startPositionY': 50,
+			'exit': {
+				'x': 250,
+				'y': 220,
+				'width': 10,
+				'height': 40,
+			},
+
 			'blocks': [
-				/*{
-					'x': 0,
-					'y': 20,
-					'width': 90,
-					'height': 20,
-				},*/
 
 				{
 					'x': 60,
@@ -69,38 +70,43 @@ window.onload = function() {
 			]
 
 		};
-		
 
-	//constructor for Level and its objects
-	function Level(level, ctx) {
+	var level2 = 
+		{
+			'startPositionX': 250,
+			'startPositionY': 50,
+			'blocks': [
 
-		this.blocks = level.blocks;
-		this.startPositionX = level.startPositionX;
-		this.startPositionY = level.startPositionY;
+				{
+					'x': 60,
+					'y': 90,
+					'width': 20,
+					'height': 190,
+				},
 
+				{
+					'x': 300,
+					'y': 200,
+					'width': 150,
+					'height': 20,
+				},
 
-		this.draw= function(){	
-			this.blocks.forEach(function(block){
-				//ctx.beginPath();
-				ctx.rect(block.x, block.y, block.width, block.height);
-				ctx.stroke();
-				//ctx.closePath();
-			})
+				{
+					'x': 0,
+					'y': 260,
+					'width': 500,
+					'height': 40,
+				},
+			]
 
-		}
-	}
+		};
 
-	//main game stuff
-
-
-	var theFirstLevel = new Level(level1, mainContext);
-	var myGuy = new Player(theFirstLevel.startPositionX, theFirstLevel.startPositionY);
-	console.log(theFirstLevel.startPositionY);
-/*
+	
+/*****************
 	
 	CONTROLS
 	
-*/
+******************/
 
 	//keep pressed keys in state to get around lag when holding down left and right
 	var keyState = {};
@@ -146,7 +152,6 @@ window.onload = function() {
 
 		//space
 		if(keyState[32]){
-			//console.log(myGuy.airborne);
 
 			if(!myGuy.airborne){
 				myGuy.jump();
@@ -156,6 +161,55 @@ window.onload = function() {
 		}
 
 		setTimeout(controlLoop, 10);
+	}
+
+/******************
+	
+	GAME STATES
+
+*******************/
+
+
+	//initial build
+	var currentLevel = 0;
+	var theLevel = new Level(levels[currentLevel], mainContext);
+	var myGuy = new Player(theLevel.startPositionX, theLevel.startPositionY);
+
+	function reset(){
+		theLevel = new Level(levels[currentLevel], mainContext);
+		myGuy = new Player(theLevel.startPositionX, theLevel.startPositionY);
+	}
+
+
+	var gameState = 'play';
+
+	function levelWin() {
+		console.log('level complete!');
+
+		mainContext.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
+		setTimeout(function(){
+			gameState = 'play';
+			//move to next level
+			if(currentLevel < levels.length - 1){
+				currentLevel++;
+				reset();
+				main();
+			} else {
+				console.log('gamewin');
+			}
+			
+		}, 2000);
+
+	}
+
+	function gameOver(){
+		console.log('game over');
+		mainContext.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
+		setTimeout(function(){
+			gameState = 'play';
+			reset();
+			main();
+		}, 2000);
 	}
 
 
@@ -187,7 +241,6 @@ window.onload = function() {
 
 	function update() {
 
-
 		//jumping and falling
 		if (myGuy.jumping) {
 			myGuy.y -= myGuy.jumpHeight;
@@ -200,17 +253,15 @@ window.onload = function() {
 		// vertical collision detection
 			if(myGuy.airborne == true && myGuy.falling == true){
 
-				for (var i = 0; i < level1.blocks.length; i++){
+				for (var i = 0; i < levels[currentLevel].blocks.length; i++){
 
-					if(checkCollisionBottom(myGuy, level1.blocks[i])){
-						myGuy.y = level1.blocks[i].y - myGuy.height;
+					if(checkCollisionBottom(myGuy, levels[currentLevel].blocks[i])){
+						myGuy.y = levels[currentLevel].blocks[i].y - myGuy.height;
 						myGuy.ySpeed = 0;
 						myGuy.airborne = false;
 						myGuy.falling = false;
 						break;
 					} else {
-						//console.log('collision is settting airborne to true');
-						//myGuy.airborne = true;
 						gravity();
 					}
 
@@ -241,13 +292,16 @@ window.onload = function() {
 
 		});
 
+		//check for level success
+		if (checkCollisionRight(myGuy, levels[currentLevel].exit) || (checkCollisionLeft(myGuy, levels[currentLevel].exit))) {
+			gameState = 'win';
+		}
+
 		//horizontal moves
 		myGuy.xVelocity *= myGuy.friction;
 		myGuy.x = myGuy.x + myGuy.xVelocity;
 		
 		controlLoop();
-
-		//console.log('update: airborne: ' + myGuy.airborne);
 	}
 
 	function draw(ctx) {
@@ -255,7 +309,7 @@ window.onload = function() {
 		ctx.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
 		ctx.beginPath();
 
-		theFirstLevel.draw();
+		theLevel.draw();
 
 
 		myGuy.draw(ctx);
@@ -263,20 +317,20 @@ window.onload = function() {
 		
 	}
 
-var lastTime;
-function main() {
-	
-	//not using the time/'per second' stuff yet
+	function main() {
 
-	/*var now = Date.now();
-	var dt = (now - lastTime) / 1000.0;*/
+		update();
+		draw(mainContext);
 
-	update();
-	draw(mainContext);
+		if (gameState == 'play'){
+			requestAnimationFrame (main);
+		} else if (gameState == 'win'){
+			levelWin();
+		}
+		else{
+			gameOver();
+		}	
+	}
 
-	//lastTime = now;
-	requestAnimationFrame (main);
-}
-
-main();
+	main();
 }

@@ -8,12 +8,6 @@
 
 		//sprites
 
-		/*this.standingLeft =new Image();
-		this.standingLeft.src = "img/stand-left.png";
-
-		this.standingRight =new Image();
-		this.standingRight.src = "img/stand-right.png";*/
-
 		this.sprites = {
 			'standingLeft': 'img/stand-left.png',
 			'standingRight': 'img/stand-right.png',
@@ -136,7 +130,7 @@
 				this.y = this.currentMemory.y;
 				this.airborne = this.currentMemory.airborne;
 				
-				//here, we can add a few milliseconds of airborne = false;
+				//here, we can add a few milliseconds of airborne = false for double jump;
 
 				this.currentMemory = null;
 
