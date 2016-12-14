@@ -44,7 +44,9 @@
 		this.airborne = true;
 		this.jumping = false;
 		this.falling = false;
+		this.cantFall = false;
 		this.running = false;
+		this.hasKey = false;
 
 
 		this.currentMemory;
@@ -63,13 +65,12 @@
 			this.standingRight.src = "img/stand-right.png";
 
 			this.draw = function(ctx){
-				//ctx.beginPath();
+				
 				if(this.facing == 'right'){
 					ctx.drawImage(this.standingRight, this.x, this.y, this.width-2, this.height-2);
 				} else {
 					ctx.drawImage(this.standingLeft, this.x, this.y, this.width-2, this.height-2);
 				}
-				//ctx.closePath();
 			}
 		}
 
@@ -128,8 +129,11 @@
 			if(this.currentMemory){
 				this.x = this.currentMemory.x;
 				this.y = this.currentMemory.y;
-				this.airborne = this.currentMemory.airborne;
-				
+				//this.airborne = false;
+				//this.jumping = false;
+				//this.falling = false;
+				//this.cantFall = true;
+
 				//here, we can add a few milliseconds of airborne = false for double jump;
 
 				this.currentMemory = null;

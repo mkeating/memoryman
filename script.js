@@ -6,12 +6,12 @@
 
 		2) better collision detection - DONE ( a few bugs )
 
-		3) sprite animation
+		3) sprite animation - DONE
 			a) how to handle player state?
 
 		4) world constructor
 			a) blocks - DONE
-			b) other objects
+			b) other objects -DONE
 
 		5) mechanics
 			a) memory - DONE
@@ -19,11 +19,11 @@
 			c) double jump
 
 		6) Bugs
-			a) slow down after like 2 mins
-			b) holding space fucks with falling
-			c) jumping up to a ledge causes a weird flight
+			a) slow down after like 2 mins - I think this is fixed
+			b) holding space fucks with falling - FIXED
+			c) jumping up to a ledge causes a weird flight - FIXED
 
-		7) Implement keyframe animation
+		7) Implement keyframe animation - DONE
 
 */
 
@@ -32,75 +32,8 @@ window.onload = function() {
 
 	var mainCanvas = document.getElementById('mainCanvas');
 	var mainContext = mainCanvas.getContext('2d');
-
-	
-	var level1 = 
-		{
-			'startPositionX': 100,
-			'startPositionY': 50,
-			'exit': {
-				'x': 250,
-				'y': 220,
-				'width': 10,
-				'height': 40,
-			},
-
-			'blocks': [
-
-				{
-					'x': 60,
-					'y': 90,
-					'width': 20,
-					'height': 190,
-				},
-
-				{
-					'x': 300,
-					'y': 200,
-					'width': 150,
-					'height': 20,
-				},
-
-				{
-					'x': 0,
-					'y': 260,
-					'width': 500,
-					'height': 40,
-				},
-			]
-
-		};
-
-	var level2 = 
-		{
-			'startPositionX': 250,
-			'startPositionY': 50,
-			'blocks': [
-
-				{
-					'x': 60,
-					'y': 90,
-					'width': 20,
-					'height': 190,
-				},
-
-				{
-					'x': 300,
-					'y': 200,
-					'width': 150,
-					'height': 20,
-				},
-
-				{
-					'x': 0,
-					'y': 260,
-					'width': 500,
-					'height': 40,
-				},
-			]
-
-		};
-
+	mainContext.font = '20px Arial';
+	mainContext.textAlign = 'center';
 	
 /*****************
 	
@@ -180,34 +113,43 @@ window.onload = function() {
 		myGuy = new Player(theLevel.startPositionX, theLevel.startPositionY);
 	}
 
-
 	var gameState = 'play';
 
-	function levelWin() {
-		console.log('level complete!');
+	function gameWin() {
 
 		mainContext.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
-		setTimeout(function(){
+		mainContext.fillText('you beat the game!', 300, 150);
+	}
+
+	function levelWin() {
+
+		if(currentLevel < levels.length - 1){
+
+			mainContext.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
+			mainContext.fillText('level complete!', 300, 150);
+
+			setTimeout(function(){
 			gameState = 'play';
 			//move to next level
-			if(currentLevel < levels.length - 1){
 				currentLevel++;
 				reset();
 				main();
-			} else {
-				console.log('gamewin');
-			}
-			
-		}, 2000);
-
+			}, 2000);
+		} else {
+				gameWin();
+		}
 	}
 
 	function gameOver(){
-		console.log('game over');
+		gameState = 'game over';
 		mainContext.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
+		mainContext.fillText('game over', 300, 150);
+
 		setTimeout(function(){
 			gameState = 'play';
+			currentLevel = 0;
 			reset();
+			console.log(myGuy.jumpHeight);
 			main();
 		}, 2000);
 	}
@@ -225,15 +167,20 @@ window.onload = function() {
 		var gravityConstant = .2; //acceleration while falling
 		var terminalVelocity = 2; //max falling speed
 
-		if ( myGuy.airborne == true){
+
+
+		if ( myGuy.airborne == true && myGuy.falling == true){
 			if( myGuy.ySpeed >= 0 && myGuy.ySpeed <= terminalVelocity) {
 				myGuy.ySpeed = myGuy.ySpeed + gravityConstant;
 			}
-
-
 			myGuy.y = myGuy.y + myGuy.ySpeed;
-		} /*else {
-			myGuy.ySpeed = 0;
+		} 
+
+		/*if ( myGuy.cantFall == true ){
+			console.log(myGuy.cantFall, myGuy.airborne, myGuy.falling);
+			setTimeout(function() {
+				myGuy.cantFall == false;
+			}, 2000);
 		}*/
 	}
 
@@ -242,10 +189,12 @@ window.onload = function() {
 	function update() {
 
 		//jumping and falling
-		if (myGuy.jumping) {
+		if (myGuy.jumping == true) {
 			myGuy.y -= myGuy.jumpHeight;
 			myGuy.falling = false;
-		} else {
+		} /*else if (myGuy.cantFall == true){
+			myGuy.falling = false;
+		} */else {
 			myGuy.falling = true;
 			myGuy.airborne = true;
 		}
@@ -264,12 +213,18 @@ window.onload = function() {
 					} else {
 						gravity();
 					}
-
 				}
+			}
 
+			/*if(myGuy.cantFall == false) {
+				gravity();
+			}*/
+
+			if( (myGuy.y + myGuy.height) > mainCanvas.height) {
+				gameState = 'game over';
 			}
 			
-		level1.blocks.forEach(function(block){
+		levels[currentLevel].blocks.forEach(function(block){
 			if(checkCollisionTop(myGuy, block)){
 				myGuy.jumping = false;
 				myGuy.jumpHeight = 0;
@@ -278,7 +233,7 @@ window.onload = function() {
 		});
 
 		//horizontal collision detection
-		level1.blocks.forEach(function(block){
+		levels[currentLevel].blocks.forEach(function(block){
 
 			if(checkCollisionLeft(myGuy, block)){
 				myGuy.x = block.x + block.width;
@@ -293,8 +248,16 @@ window.onload = function() {
 		});
 
 		//check for level success
-		if (checkCollisionRight(myGuy, levels[currentLevel].exit) || (checkCollisionLeft(myGuy, levels[currentLevel].exit))) {
-			gameState = 'win';
+
+		if(checkCollisionRight(myGuy, theLevel.key) || checkCollisionTop(myGuy, theLevel.key) || checkCollisionLeft(myGuy, theLevel.key) || checkCollisionBottom(myGuy, theLevel.key)){
+			myGuy.hasKey = true; 
+		}
+
+		if (checkCollisionRight(myGuy, theLevel.exit) || (checkCollisionLeft(myGuy, theLevel.exit))) {
+			if(myGuy.hasKey == true){
+				gameState = 'win';
+			}
+			
 		}
 
 		//horizontal moves
@@ -310,6 +273,10 @@ window.onload = function() {
 		ctx.beginPath();
 
 		theLevel.draw();
+
+		if(!myGuy.hasKey) {
+			theLevel.drawKey();
+		}
 
 
 		myGuy.draw(ctx);
@@ -331,6 +298,7 @@ window.onload = function() {
 			gameOver();
 		}	
 	}
+	mainContext.fillText('MEMORY MAN', 300, 150);
+	setTimeout(main, 4000);
 
-	main();
 }
