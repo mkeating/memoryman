@@ -7,18 +7,34 @@
 		this.exit = level.exit;
 		this.key = level.key;
 
+		this.keySprite = new Image;
+		this.keySprite.src = 'img/key.png';
+
+		//in case we want level-specific backgrounds in the future
+		this.background = new Image;
+		this.background.src = 'img/background.png';
+
+
 
 		this.draw= function(){	
+
+			ctx.drawImage(this.background, 0, 0, mainCanvas.width, mainCanvas.height);
+
 			this.blocks.forEach(function(block){
 
-				ctx.rect(block.x, block.y, block.width, block.height);
-				ctx.stroke();
+				ctx.fillStyle = 'white';
+				ctx.fillRect(block.x, block.y, block.width, block.height);
+				//ctx.stroke();
 				
 			});
 
 			//draw exit
-			ctx.rect(this.exit.x, this.exit.y, this.exit.width, this.exit.height);
-			ctx.stroke();
+			ctx.fillStyle = '#00ff96';
+			ctx.fillRect(this.exit.x, this.exit.y, this.exit.width, this.exit.height);
+			//ctx.stroke();
+
+
+			ctx.fillStyle = 'black';
 
 			
 
@@ -26,7 +42,7 @@
 
 		this.drawKey = function() {
 			//draw key
-			ctx.rect(this.key.x, this.key.y, 10, 10);
-			ctx.stroke();
+			ctx.drawImage(this.keySprite, this.key.x, this.key.y, 25, 25);
+			
 		}
 	}

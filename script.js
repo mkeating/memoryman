@@ -119,6 +119,10 @@ window.onload = function() {
 
 		mainContext.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
 		mainContext.fillText('you beat the game!', 300, 150);
+
+		setTimeout( function() {
+			window.location.reload(true);
+		}, 4000);
 	}
 
 	function levelWin() {
@@ -143,7 +147,7 @@ window.onload = function() {
 	function gameOver(){
 		gameState = 'game over';
 		mainContext.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
-		mainContext.fillText('game over', 300, 150);
+		mainContext.fillText('dead :(', 300, 150);
 
 		setTimeout(function(){
 			gameState = 'play';
@@ -177,10 +181,14 @@ window.onload = function() {
 		} 
 
 		/*if ( myGuy.cantFall == true ){
-			console.log(myGuy.cantFall, myGuy.airborne, myGuy.falling);
-			setTimeout(function() {
-				myGuy.cantFall == false;
-			}, 2000);
+			
+			setTimeout(function(guy) {
+				return function() {
+					console.log(guy.cantFall, guy.airborne, guy.falling);
+					guy.cantFall == false;
+				};
+				
+			}(myGuy), 2000);
 		}*/
 	}
 
@@ -209,6 +217,7 @@ window.onload = function() {
 						myGuy.ySpeed = 0;
 						myGuy.airborne = false;
 						myGuy.falling = false;
+						//console.log(myGuy.x);
 						break;
 					} else {
 						gravity();
@@ -298,7 +307,10 @@ window.onload = function() {
 			gameOver();
 		}	
 	}
+
 	mainContext.fillText('MEMORY MAN', 300, 150);
-	setTimeout(main, 4000);
+	setTimeout(main, 1000);
+	
+	
 
 }

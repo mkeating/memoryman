@@ -51,25 +51,25 @@
 
 		this.currentMemory;
 
-		function Memory(x, y, airborne) {
+		function Memory(x, y, facing) {
 			this.x = x;
 			this.y = y;
-			this.airborne = airborne;
-			this.width = 15;
-			this.height = 15;
+			this.facing = facing;
+			this.width = 20;
+			this.height = 20;
 
-			this.standingLeft =new Image();
-			this.standingLeft.src = "img/stand-left.png";
+			this.left =new Image();
+			this.left.src = "img/fall-left.png";
 
-			this.standingRight =new Image();
-			this.standingRight.src = "img/stand-right.png";
+			this.right =new Image();
+			this.right.src = "img/fall-right.png";
 
 			this.draw = function(ctx){
 				
 				if(this.facing == 'right'){
-					ctx.drawImage(this.standingRight, this.x, this.y, this.width-2, this.height-2);
+					ctx.drawImage(this.right, this.x, this.y, this.width, this.height);
 				} else {
-					ctx.drawImage(this.standingLeft, this.x, this.y, this.width-2, this.height-2);
+					ctx.drawImage(this.left, this.x, this.y, this.width, this.height);
 				}
 			}
 		}
@@ -121,7 +121,7 @@
 
 			
 			if(!this.currentMemory){
-				  this.currentMemory = new Memory(this.x, this.y, this.airborne);
+				  this.currentMemory = new Memory(this.x, this.y, this.facing);
 			}	
 		}
 
