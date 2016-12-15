@@ -1,6 +1,6 @@
 var levels = [
 
-		/*{	
+		{	
 			'name': 'Level 1',
 			'prompt': 'Pretty simple',
 			'startPositionX': 50,
@@ -166,7 +166,7 @@ var levels = [
 				
 
 			]
-		},*/
+		},
 
 		{	
 			'name': 'Level 4',

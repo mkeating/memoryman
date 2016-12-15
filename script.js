@@ -133,11 +133,24 @@ window.onload = function() {
 			mainContext.fillText('level complete!', 300, 150);
 
 			setTimeout(function(){
-			gameState = 'play';
-			//move to next level
+			
+				gameState = 'play';
+				//move to next level
 				currentLevel++;
-				reset();
-				main();
+
+				//level intro
+
+				mainContext.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
+				mainContext.fillText(levels[currentLevel].name, 300, 150);
+				mainContext.fillText(levels[currentLevel].prompt, 300, 200);
+
+
+				setTimeout(function(){
+					reset();
+					main();
+				}, 2000);
+
+				
 			}, 2000);
 		} else {
 				gameWin();
@@ -151,7 +164,7 @@ window.onload = function() {
 
 		setTimeout(function(){
 			gameState = 'play';
-			currentLevel = 0;
+			//currentLevel = 0;
 			reset();
 			console.log(myGuy.jumpHeight);
 			main();
@@ -168,7 +181,7 @@ window.onload = function() {
 
 	function gravity(){
 
-		var gravityConstant = .2; //acceleration while falling
+		var gravityConstant = .12; //acceleration while falling
 		var terminalVelocity = 2; //max falling speed
 
 
@@ -217,6 +230,7 @@ window.onload = function() {
 						myGuy.ySpeed = 0;
 						myGuy.airborne = false;
 						myGuy.falling = false;
+						myGuy.jumpHeight = 7;
 						//console.log(myGuy.x);
 						break;
 					} else {
@@ -272,6 +286,12 @@ window.onload = function() {
 		//horizontal moves
 		myGuy.xVelocity *= myGuy.friction;
 		myGuy.x = myGuy.x + myGuy.xVelocity;
+
+
+
+		/*if(myGuy.xVelocity> -.09 && myGuy.xVelocity < .01){
+			myGuy.xVelocity = 0;
+		}*/
 		
 		controlLoop();
 	}
