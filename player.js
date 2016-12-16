@@ -34,7 +34,7 @@
 		this.friction = .7;
 		this.xSpeed = 4;
 		this.xVelocity = 0;
-		this.xVelocityFactor = 5;
+		this.xVelocityFactor = 4;
 		this.ySpeed = 0;
 		this.stroke = '#000000';
 		this.jumpHeight = 7;
@@ -129,8 +129,6 @@
 			if(this.currentMemory){
 				this.x = this.currentMemory.x;
 				this.y = this.currentMemory.y;
-
-				//console.log(this.xVelocity);
 
 				//provides a boost when recalling memory; allows the player to travel farther if moving left or right 
 				if(this.facing == 'right' && this.xVelocity > .01){

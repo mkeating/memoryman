@@ -14,8 +14,6 @@
 		this.background = new Image;
 		this.background.src = 'img/background.png';
 
-
-
 		this.draw= function(){	
 
 			ctx.drawImage(this.background, 0, 0, mainCanvas.width, mainCanvas.height);
@@ -24,19 +22,14 @@
 
 				ctx.fillStyle = 'white';
 				ctx.fillRect(block.x, block.y, block.width, block.height);
-				//ctx.stroke();
-				
+
 			});
 
 			//draw exit
 			ctx.fillStyle = '#00ff96';
 			ctx.fillRect(this.exit.x, this.exit.y, this.exit.width, this.exit.height);
-			//ctx.stroke();
-
 
 			ctx.fillStyle = 'black';
-
-			
 
 		}
 

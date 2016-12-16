@@ -175,14 +175,14 @@ var levels = [
 			'startPositionY': 10,
 			'exit': {
 				'x': 580,
-				'y': 30,
+				'y': 50,
 				'width': 10,
 				'height': 40,
 			},
 
 			'key': {
 				'x': 290,
-				'y': 255
+				'y': 5
 			},
 
 			'blocks': [
@@ -198,23 +198,61 @@ var levels = [
 
 				{
 					'x': 0,
-					'y': 70,
+					'y': 90,
 					'width': 200,
 					'height': 230,
 
 				},
 
 				{
-					'x': 275,
-					'y': 280,
-					'width': 250,
-					'height': 20,
+					'x': 400,
+					'y': 90,
+					'width': 290,
+					'height': 230,
+
+				},
+			]
+		},
+
+		{	
+			'name': 'Level 5',
+			'prompt': "Trust fall",
+			'startPositionX': 20,
+			'startPositionY': 10,
+			'exit': {
+				'x': 580,
+				'y': 210,
+				'width': 10,
+				'height': 40,
+			},
+
+			'key': {
+				'x': 220,
+				'y': 280
+			},
+
+			'blocks': [
+
+				//for some reason, the levels first block doesnt collide correctly, so placing an invisible dummy block
+				{
+					'x': 0,
+					'y': 0,
+					'width': 0,
+					'height': 0,
 
 				},
 
 				{
-					'x': 310,
-					'y': 270,
+					'x': 0,
+					'y': 90,
+					'width': 200,
+					'height': 230,
+
+				},
+
+				{
+					'x': 500,
+					'y': 250,
 					'width': 290,
 					'height': 230,
 

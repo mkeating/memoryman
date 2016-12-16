@@ -1,3 +1,15 @@
+/*
+	
+	MEMORY MAN
+
+	an HTML canvas puzzle patformer prototype built for HES CSCI E-3
+
+	references:
+		https://developer.mozilla.org/en-US/docs/Games/Tutorials/2D_Breakout_game_pure_JavaScript
+		https://www.html5rocks.com/en/tutorials/canvas/notearsgame/
+		http://jlongster.com/Making-Sprite-based-Games-with-Canvas
+
+*/
 
 /*
 	TODO:
@@ -15,8 +27,8 @@
 
 		5) mechanics
 			a) memory - DONE
-			b) interactions?
-			c) double jump
+			b) interactions? -later version
+			c) double jump - later version
 
 		6) Bugs
 			a) slow down after like 2 mins - I think this is fixed
@@ -135,11 +147,11 @@ window.onload = function() {
 			setTimeout(function(){
 			
 				gameState = 'play';
+
 				//move to next level
 				currentLevel++;
 
 				//level intro
-
 				mainContext.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
 				mainContext.fillText(levels[currentLevel].name, 300, 150);
 				mainContext.fillText(levels[currentLevel].prompt, 300, 200);
@@ -164,9 +176,7 @@ window.onload = function() {
 
 		setTimeout(function(){
 			gameState = 'play';
-			//currentLevel = 0;
 			reset();
-			console.log(myGuy.jumpHeight);
 			main();
 		}, 2000);
 	}
@@ -183,8 +193,6 @@ window.onload = function() {
 
 		var gravityConstant = .12; //acceleration while falling
 		var terminalVelocity = 2; //max falling speed
-
-
 
 		if ( myGuy.airborne == true && myGuy.falling == true){
 			if( myGuy.ySpeed >= 0 && myGuy.ySpeed <= terminalVelocity) {
@@ -204,8 +212,6 @@ window.onload = function() {
 			}(myGuy), 2000);
 		}*/
 	}
-
-
 
 	function update() {
 
@@ -287,12 +293,6 @@ window.onload = function() {
 		myGuy.xVelocity *= myGuy.friction;
 		myGuy.x = myGuy.x + myGuy.xVelocity;
 
-
-
-		/*if(myGuy.xVelocity> -.09 && myGuy.xVelocity < .01){
-			myGuy.xVelocity = 0;
-		}*/
-		
 		controlLoop();
 	}
 
@@ -329,8 +329,12 @@ window.onload = function() {
 	}
 
 	mainContext.fillText('MEMORY MAN', 300, 150);
-	setTimeout(main, 1000);
-	
-	
+
+	setTimeout( function() {
+		mainContext.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
+		mainContext.fillText(levels[currentLevel].name, 300, 150);
+		mainContext.fillText(levels[currentLevel].prompt, 300, 200);
+		setTimeout(main, 2000);
+	}, 1000);
 
 }
