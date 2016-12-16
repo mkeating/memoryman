@@ -335,6 +335,6 @@ window.onload = function() {
 		mainContext.fillText(levels[currentLevel].name, 300, 150);
 		mainContext.fillText(levels[currentLevel].prompt, 300, 200);
 		setTimeout(main, 2000);
-	}, 1000);
+	}, 3000);
 
 }
